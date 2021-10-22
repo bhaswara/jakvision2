@@ -1,5 +1,4 @@
 -f https://download.pytorch.org/whl/torch_stable.html
-python-3.8.12
 numpy
 Click>=7.1.2
 Flask>=1.1.2
