@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from models import ProtoNet
 import os
-import cv2
+import io
 
 import base64
 
@@ -31,10 +31,10 @@ def success():
         f.save(saveLocation)
         data, inference, confidence = model.infer(saveLocation)
 
-        retval, buffer_img= cv2.imencode('.jpg', data)
-        jpg_as_text = base64.b64encode(buffer_img).decode('utf-8')
-        # make a percentage with 2 decimal points
-        #confidence = floor(confidence * 10000) / 100
+        buf = io.BytesIO()
+        data.save(buf, format='JPEG')
+        jpg_as_text = base64.b64encode(buf.getvalue()).decode('utf-8')
+
         # delete file after making an inference
         os.remove(saveLocation)
         # respond with the inference

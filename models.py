@@ -1,13 +1,13 @@
 # The class containing the model
+from numpy.lib.type_check import imag
 import torch
-import cv2
 from PIL import Image
 import torchvision
 from torchvision import transforms
 import numpy as np
 import io
 import easyfsl
-import time
+import base64
 
 #import matplotlib.pyplot as plt
 
@@ -31,21 +31,21 @@ class ProtoNet:
         self.model.eval()
     
     def infer(self, image):
-        input_image_ori = cv2.imread(image)
-        input_image = cv2.cvtColor(input_image_ori, cv2.COLOR_BGR2RGB)
+        #input_image_ori = cv2.imread(image)
+        #input_image = cv2.cvtColor(input_image_ori, cv2.COLOR_BGR2RGB)
 
         #image_array = np.asarray(bytearray(image), dtype=np.uint8)
         #img_opencv = cv2.imdecode(image_array, -1)
         #input_image = cv2.cvtColor(img_opencv, cv2.COLOR_BGR2RGB)
 
-        #input_image = Image.open(io.BytesIO(image))
+        b64 = base64.b64encode(open(image,'rb').read())
+        input_image = Image.open(io.BytesIO(base64.b64decode(b64)))
         #input_image = Image.open(image)
 
         temp_label_srtd = []
         temp_conf_srtd = []
         with torch.no_grad():
-            preprocess = transforms.Compose([transforms.ToPILImage(),
-                                    transforms.Resize((84,84)), 
+            preprocess = transforms.Compose([transforms.Resize((84,84)), 
                                     transforms.ToTensor(),
                                     transforms.Normalize(mean = [0.485, 0.456, 0.406],
                                                         std = [0.229, 0.224, 0.225])])
@@ -68,7 +68,7 @@ class ProtoNet:
                 temp_conf_srtd.append(prob)
 
             
-        return (input_image_ori, temp_label_srtd, temp_conf_srtd)
+        return (input_image, temp_label_srtd, temp_conf_srtd)
     
     def load_model(self, fpath):
         check = torch.load(fpath, map_location=self.device)
