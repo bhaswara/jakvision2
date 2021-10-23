@@ -8,6 +8,7 @@ import numpy as np
 import io
 import easyfsl
 import base64
+import time
 
 #import matplotlib.pyplot as plt
 
@@ -37,7 +38,7 @@ class ProtoNet:
         #image_array = np.asarray(bytearray(image), dtype=np.uint8)
         #img_opencv = cv2.imdecode(image_array, -1)
         #input_image = cv2.cvtColor(img_opencv, cv2.COLOR_BGR2RGB)
-
+        start_time = time.time()
         b64 = base64.b64encode(open(image,'rb').read())
         input_image = Image.open(io.BytesIO(base64.b64decode(b64)))
         #input_image = Image.open(image)
@@ -66,9 +67,10 @@ class ProtoNet:
                 prob, label = t
                 temp_label_srtd.append(label)
                 temp_conf_srtd.append(prob)
-
+        end_time = time.time()
+        exec_time = end_time-start_time
             
-        return (input_image, temp_label_srtd, temp_conf_srtd)
+        return (input_image, temp_label_srtd, temp_conf_srtd, exec_time)
     
     def load_model(self, fpath):
         check = torch.load(fpath, map_location=self.device)

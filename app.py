@@ -29,7 +29,7 @@ def success():
         f = request.files['file']
         saveLocation = f.filename
         f.save(saveLocation)
-        data, inference, confidence = model.infer(saveLocation)
+        data, inference, confidence, exec_time = model.infer(saveLocation)
 
         buf = io.BytesIO()
         data.save(buf, format='JPEG')
@@ -38,7 +38,7 @@ def success():
         # delete file after making an inference
         os.remove(saveLocation)
         # respond with the inference
-        return render_template('inference.html', name=inference, confidence=confidence, photo=jpg_as_text)
+        return render_template('inference.html', name=inference, confidence=confidence, exec_time=exec_time, photo=jpg_as_text)
 
 
 if __name__ == '__main__':
