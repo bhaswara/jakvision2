@@ -14,7 +14,7 @@ import time
 
 class ProtoNet:
     def __init__(self):
-        trained_weight_path = 'weights/protonet_MOBILENET-V3_13class_5shot.pth'
+        trained_weight_path = 'weights/protonet_byol_13class_5shot.pth'
         support_image_path = 'weights/support_image.pt'
         support_label_path = 'weights/support_label.pt'
 
